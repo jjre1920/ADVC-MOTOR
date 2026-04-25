@@ -1,52 +1,71 @@
 ﻿import streamlit as st
 import pandas as pd
 from datetime import datetime
+import os
 
 st.set_page_config(page_title="ADVANCE - Data Center", layout="wide", page_icon="🗄️")
+
+# --- CONFIGURACIÓN DE BASE DE DATOS ---
+DB_FILE = "ADVANCE_DATABASE.xlsx"
 
 def principal():
     st.title("⚡ ADVANCE GLOBAL - Intelligence & Logistics")
     
-    # --- PESTAÑAS DE OPERACIÓN ---
     tab1, tab2 = st.tabs(["🛰️ Radar de Activos", "📝 Registro de Propiedades"])
 
     with tab2:
         st.header("🗄️ Portal de Captura Permanente")
-        st.write("Complete los datos. La información será almacenada en la base de datos de ADVANCE.")
+        st.write("Ingrese los datos para actualizar la base de datos maestra.")
         
         with st.form("database_form", clear_on_submit=True):
             c1, c2 = st.columns(2)
             with c1:
                 realty = st.text_input("Inmobiliaria / Agente")
-                titulo = st.text_input("Nombre del Activo (Propiedad/Auto)")
+                titulo = st.text_input("Nombre del Activo")
             with c2:
-                valor = st.text_input("Valor de Mercado (USD)")
-                contacto = st.text_input("Vínculo de Contacto (WA/Cel)")
+                valor = st.text_input("Valor (USD)")
+                contacto = st.text_input("Contacto (WhatsApp)")
 
-            st.write("📍 **Geolocalización Táctica**")
+            st.write("📍 **Geolocalización**")
             la, lo = st.columns(2)
             lat = la.number_input("Latitud", value=27.9500, format="%.6f")
             lon = lo.number_input("Longitud", value=-111.0500, format="%.6f")
             
-            submit = st.form_submit_button("🚀 Inyectar Datos a la Red")
+            submit = st.form_submit_button("🚀 Inyectar Datos a ADVANCE")
 
             if submit:
-                # Simulación de guardado (Preparación para Google Sheets)
-                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                st.success(f"✅ REGISTRO EXITOSO: {titulo} guardado en el servidor a las {timestamp}.")
-                st.info("Sincronizando con la base de datos maestra...")
+                nueva_fila = {
+                    'Fecha': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    'Inmobiliaria': realty,
+                    'Activo': titulo,
+                    'Valor': valor,
+                    'Contacto': contacto,
+                    'Latitud': lat,
+                    'Longitud': lon
+                }
+                
+                # Proceso de Guardado Real
+                try:
+                    df = pd.read_excel(DB_FILE)
+                    df = pd.concat([df, pd.DataFrame([nueva_fila])], ignore_index=True)
+                    df.to_excel(DB_FILE, index=False)
+                    st.success(f"✅ {titulo} ha sido guardado permanentemente en la base de datos.")
+                    st.balloons()
+                except Exception as e:
+                    st.error(f"Error en la base de datos: {e}")
 
     with tab1:
-        st.subheader("🛰️ Monitoreo de Nodos en Tiempo Real")
-        col1, col2, col3, col4 = st.columns(4)
-        col1.metric("Unidades en Puente", "385", "Activas")
-        col2.metric("Base de Datos", "Sincronizada", "Cloud")
-        col3.metric("Flujo de Datos", "1.2 GB/s", "Óptimo")
-        col4.metric("Seguridad", "AES-256", "Lock")
-        
-        # Mapa base
-        mapa_data = pd.DataFrame({'lat': [27.9500], 'lon': [-111.0500]})
-        st.map(mapa_data)
+        st.subheader("🛰️ Monitoreo de Nodos Registrados")
+        try:
+            df_mapa = pd.read_excel(DB_FILE)
+            if not df_mapa.empty:
+                st.metric("Propiedades en Base de Datos", len(df_mapa), "+1")
+                st.map(df_mapa[['Latitud', 'Longitud']].rename(columns={'Latitud': 'lat', 'Longitud': 'lon'}))
+                st.dataframe(df_mapa) # Tabla para ver los datos guardados
+            else:
+                st.info("No hay activos registrados aún.")
+        except:
+            st.warning("Esperando sincronización de archivo...")
 
 if __name__ == "__main__":
     principal()
