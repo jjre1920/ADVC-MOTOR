@@ -1,45 +1,54 @@
 ﻿import streamlit as st
 import pandas as pd
 
-st.set_page_config(page_title="ADVANCE GLOBAL - EliteConnect", layout="wide", page_icon="💎")
+st.set_page_config(page_title="ADVANCE - Realty Portal", layout="wide", page_icon="🏘️")
 
 def principal():
     st.title("⚡ ADVANCE GLOBAL - Intelligence & Logistics")
-    st.markdown("### 🏘️ EliteConnect: Gestión de Propiedades de Alto Perfil")
-
-    # --- BARRA LATERAL: ENTRADA DE DATOS ---
-    st.sidebar.header("🛠️ Registro de Activo")
-    nombre_casa = st.sidebar.text_input("Nombre de la Propiedad", "Villa Paraíso - San Carlos")
-    precio = st.sidebar.text_input("Valor Estimado (USD)", ",250,000")
-    lat_casa = st.sidebar.number_input("Latitud", value=27.9455, format="%.4f")
-    lon_casa = st.sidebar.number_input("Longitud", value=-111.0422, format="%.4f")
-
-    # --- MÉTRICAS ---
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Unidades en Puente", "385", "Activas")
-    col2.metric("Propiedad en Foco", "ACTIVA", "VIP")
-    col3.metric("Interés de Compra", "Alta", "+12%")
-    col4.metric("Seguridad de Datos", "Encriptado", "AES-256")
-
-    st.write("---")
-
-    # --- VISUALIZADOR DE PROPIEDAD ---
-    c1, c2 = st.columns([1, 2])
     
-    with c1:
-        st.subheader("📋 Ficha Técnica")
-        st.info(f"**Nombre:** {nombre_casa}")
-        st.success(f"**Precio:** {precio}")
-        st.write("**Ubicación:** Sector Privado, San Carlos")
-        st.write("**Características:** Vista al mar, 5 Recámaras, Muelle Privado.")
-        
-    with c2:
-        st.subheader("📍 Ubicación en Radar")
-        mapa_data = pd.DataFrame({'lat': [lat_casa], 'lon': [lon_casa]})
-        st.map(mapa_data)
+    # --- PESTAÑAS DE OPERACIÓN ---
+    tab1, tab2 = st.tabs(["🛰️ Radar Global", "🏘️ Registro de Realties"])
 
-    if st.button("🛰️ Sincronizar con Compradores VIP"):
-        st.toast(f"Conectando {nombre_casa} con inversionistas...", icon="💎")
+    with tab2:
+        st.header("📝 Registro de Nueva Propiedad")
+        st.write("Ingrese los datos para vincular la propiedad al radar de ADVANCE.")
+        
+        with st.form("realty_form", clear_on_submit=True):
+            col_a, col_b = st.columns(2)
+            with col_a:
+                realty_name = st.text_input("Nombre de la Inmobiliaria")
+                propiedad_titulo = st.text_input("Título de la Propiedad (Ej. Casa Vista Mar)")
+                tipo = st.selectbox("Tipo de Activo", ["Residencial VIP", "Terreno Comercial", "Hacienda", "Otro"])
+            with col_b:
+                precio_realty = st.number_input("Precio de Lista (USD)", min_value=0)
+                contacto = st.text_input("WhatsApp de Contacto")
+                ubicacion_txt = st.text_input("Referencia de Ubicación (Ej. Sector Bahía)")
+
+            st.write("📍 **Coordenadas para el Radar**")
+            c_lat, c_lon = st.columns(2)
+            lat_in = c_lat.number_input("Latitud Exacta", value=27.9500, format="%.6f")
+            lon_in = c_lon.number_input("Longitud Exacta", value=-111.0500, format="%.6f")
+            
+            descripcion = st.text_area("Descripción de la Propiedad")
+            
+            submit = st.form_submit_button("🚀 Subir al Radar ADVANCE")
+
+            if submit:
+                st.success(f"✅ ¡{propiedad_titulo} ha sido vinculada con éxito por {realty_name}!")
+                st.balloons()
+
+    with tab1:
+        st.subheader("🛰️ Monitoreo de Nodos y Activos VIP")
+        # Aquí se mostrarán los activos subidos
+        col1, col2, col3, col4 = st.columns(4)
+        col1.metric("Unidades en Puente", "385", "Activas")
+        col2.metric("Propiedades Online", "25", "+1")
+        col3.metric("Flujo de Datos", "1.2 GB/s", "Estable")
+        col4.metric("Seguridad", "Encriptado", "AES-256")
+        
+        # Mapa que muestra la última propiedad registrada o base
+        mapa_data = pd.DataFrame({'lat': [27.95, 27.92, 28.00], 'lon': [-111.05, -110.90, -110.95]})
+        st.map(mapa_data)
 
 if __name__ == "__main__":
     principal()
