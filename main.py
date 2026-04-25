@@ -2,33 +2,52 @@
 import pandas as pd
 import numpy as np
 
-# Configuración de Identidad ADVANCE
-st.set_page_config(page_title="ADVANCE GLOBAL CORE", page_icon="⚡", layout="wide")
+# 1. Configuración de Identidad
+st.set_page_config(page_title="ADVANCE GLOBAL - Network", layout="wide", page_icon="🌐")
 
-st.title("⚡ ADVANCE GLOBAL - SISTEMA CENTRAL 2027")
-st.markdown(f"**Arquitecto:** Rubio Escutia | **Estatus:** Operativo")
+def principal():
+    st.title("⚡ ADVANCE GLOBAL - Intelligence & Logistics")
+    st.markdown("### 🛰️ Puentes de Información en Tiempo Real")
 
-st.divider()
+    # --- SIDEBAR: CONTROL DE OPERACIONES ---
+    st.sidebar.image("https://cdn-icons-png.flaticon.com/512/2082/2082805.png", width=100) # Icono de red
+    st.sidebar.title("Comando Central")
+    sector = st.sidebar.selectbox("Sector de Monitoreo", ["San Carlos", "Guaymas", "Hermosillo", "Nacional"])
+    velocidad = st.sidebar.slider("Latencia de Puente (ms)", 10, 500, 100)
 
-# --- CAPA DE TELEMETRÍA ---
-col1, col2, col3 = st.columns(3)
-with col1:
-    st.metric(label="Nodos Activos (Flota)", value="400", delta="+380")
-with col2:
-    st.metric(label="Estatus Educación", value="MATEO / JUAN DIEGO: PENDIENTE", delta_color="inverse")
-with col3:
-    st.metric(label="Conexiones EliteConnect", value="12", delta="Vendedores VIP")
+    # --- MÉTRICAS DE RED ---
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Unidades en Puente", "385", "Activas")
+    col2.metric("Flujo de Datos", "1.2 GB/s", "+15%")
+    col3.metric("Nodos de Enlace", "12", "Estables")
+    col4.metric("Seguridad", "Encriptado", "AES-256")
 
-st.divider()
+    st.write("---")
 
-# --- GRÁFICA DE OPERACIÓN ---
-st.subheader("📊 Rendimiento de Unidades en Tiempo Real")
-chart_data = pd.DataFrame(np.random.randn(20, 2), columns=['Eficiencia', 'Telemetría'])
-st.area_chart(chart_data)
+    # --- EL MAPA DE PUENTES (TELEMETRÍA) ---
+    # Creamos coordenadas simuladas de "Puentes" en Sonora
+    # San Carlos/Guaymas como centro neurálgico
+    data = pd.DataFrame({
+        'lat': [27.95, 27.92, 28.00, 29.07],
+        'lon': [-111.05, -110.90, -110.95, -110.96],
+        'nombre': ['Base San Carlos', 'Nodo Guaymas', 'EliteConnect Point', 'Hub Hermosillo']
+    })
 
-st.sidebar.title("Mando Central")
-if st.sidebar.button("PROTOCOL 2027: DESBLOQUEAR"):
-    st.sidebar.success("ORDEN ENVIADA AL NÚCLEO")
-    st.balloons()
+    st.subheader(f"📍 Visualización de Nodos: Sector {sector}")
+    st.map(data)
 
-st.info("SISTEMA OPERATIVO - PUENTE ACTIVO EN PUERTO 8501")
+    # --- ÁREA DE TRASLADO DE INFORMACIÓN ---
+    st.write("### 📤 Registro de Traslados Recientes")
+    log_data = {
+        "Origen": ["San Carlos", "Hermosillo", "Guaymas"],
+        "Destino": ["EliteConnect Hub", "San Carlos", "Advance Academy"],
+        "Estado": ["Transmitiendo...", "Completado", "Sincronizando"],
+        "Carga": ["VIP Asset Data", "Telemetría ECU", "User Auth"]
+    }
+    st.table(log_data)
+
+    if st.button("🚀 Forzar Sincronización Global"):
+        st.toast("Sincronizando puentes con el Imperio...", icon="🛰️")
+
+if __name__ == "__main__":
+    principal()
