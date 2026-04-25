@@ -1,5 +1,4 @@
 ﻿import streamlit as st
-import pd
 import pandas as pd
 
 st.set_page_config(page_title="ADVANCE GLOBAL - EliteConnect", layout="wide", page_icon="💎")
